@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -12,10 +14,11 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final Map<Integer, Film> films = new LinkedHashMap<>();
+    private final List<Film> films = new ArrayList<>();
+    private final FilmValidator validator = new FilmValidator();
 
     @GetMapping
-    public Map<Integer, Film> getFilms() {
+    public List<Film> getFilms() {
         log.info("Получен запрос на получение списка фильмов");
         return films;
     }
@@ -23,16 +26,29 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос на добавление нового фильмов");
-        films.put(film.getId(), film);
+        validator.validateReleaseDate(film);
+        films.add(film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос на обновление фильма");
-
-        films.put(film.getId(), film);
+        validator.validateReleaseDate(film);
+        Film update = films.stream()
+                .filter(f -> f.getId() == film.getId())
+                .findAny()
+                .orElse(null);
+        if (update != null) {
+            films.remove(update);
+            films.add(film);
+        } else {
+            log.warn("Фильма с таким id нет - обновление не возможно");
+            throw new ValidationException("Нет фильма с таким id");
+        }
         return film;
     }
+
+
 
 }

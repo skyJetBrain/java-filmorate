@@ -23,12 +23,5 @@ public class User {
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private final LocalDate birthday;
 
-    public String getName() {
-        if (this.name == null) {
-            log.warn("Имя не введено");
-            this.name = this.login;
-            return this.name;
-        }
-        return name;
-    }
+
 }

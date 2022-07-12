@@ -19,12 +19,4 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть больше 0")
     private final int duration;
 
-    public LocalDate getReleaseDate() {
-
-        if (releaseDate.isBefore(LocalDate.of(1895, 12, 28))) {
-            log.warn("Дата релиза фильма не может быть ранее 28 декабря 1895 года");
-            throw new ValidationException("Дата релиза фильма не может быть ранее 28 декабря 1895 года");
-        }
-        return releaseDate;
-    }
 }
