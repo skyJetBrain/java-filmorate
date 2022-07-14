@@ -15,7 +15,7 @@ import java.util.List;
 public class UserController {
 
     private final List<User> users = new ArrayList<>();
-    private static int startId = 100;
+    private static int startId = 1;
 
     @GetMapping
     public List<User> getUsers() {
@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         log.info("Получен запрос на создание нового пользователя");
-        if (user.getName() == null) {
+        if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         user.setId(startId++);

@@ -16,7 +16,7 @@ public class FilmController {
 
     private final List<Film> films = new ArrayList<>();
     private final FilmValidator validator = new FilmValidator();
-    private static int startId = 100;
+    private static int startId = 1;
 
     @GetMapping
     public List<Film> getFilms() {
