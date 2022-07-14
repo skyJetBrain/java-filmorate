@@ -1,22 +1,26 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.Setter;
+import lombok.Value;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-@Data
+@Value
 @Slf4j
 public class Film {
-    private final int id;
+    @NonFinal
+    @Setter
+    int id;
     @NotBlank(message = "У фильма должно быть название")
-    private final String name;
+    String name;
     @Size(max = 200, message = "Описание не должно превышать 200 символов")
-    private final String description;
-    private final LocalDate releaseDate;
+    String description;
+    LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть больше 0")
-    private final int duration;
+    int duration;
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public class UserController {
 
     private final List<User> users = new ArrayList<>();
+    private static int startId = 100;
 
     @GetMapping
     public List<User> getUsers() {
@@ -28,6 +29,7 @@ public class UserController {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
+        user.setId(startId++);
         users.add(user);
         return user;
     }
@@ -41,12 +43,11 @@ public class UserController {
         if (update != null) {
             users.remove(update);
             users.add(user);
+            return user;
         } else {
             log.warn("Пользователя с таким id нет - обновление не возможно");
             throw new ValidationException("Нет пользователя с таким id");
         }
-        users.add(user);
-        return user;
     }
 
 

@@ -16,6 +16,7 @@ public class FilmController {
 
     private final List<Film> films = new ArrayList<>();
     private final FilmValidator validator = new FilmValidator();
+    private static int startId = 100;
 
     @GetMapping
     public List<Film> getFilms() {
@@ -27,6 +28,7 @@ public class FilmController {
     public Film addFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос на добавление нового фильмов");
         validator.validateReleaseDate(film);
+        film.setId(startId++);
         films.add(film);
         return film;
     }
@@ -42,11 +44,11 @@ public class FilmController {
         if (update != null) {
             films.remove(update);
             films.add(film);
+            return film;
         } else {
             log.warn("Фильма с таким id нет - обновление не возможно");
             throw new ValidationException("Нет фильма с таким id");
         }
-        return film;
     }
 
 
