@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
         User update = users.stream()
                 .filter(u -> u.getId() == user.getId())
                 .findAny()
