@@ -46,7 +46,7 @@ public class FilmController {
             films.add(film);
             return film;
         } else {
-            log.warn("Фильма с таким id нет - обновление не возможно");
+            log.warn("Фильма с таким id={} нет - обновление не возможно", film.getId());
             throw new ValidationException("Нет фильма с таким id");
         }
     }

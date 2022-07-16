@@ -10,11 +10,10 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Value
-@Slf4j
 public class Film {
     @NonFinal
     @Setter
-    Long id;
+    private Long id;
     @NotBlank(message = "У фильма должно быть название")
     String name;
     @Size(max = 200, message = "Описание не должно превышать 200 символов")

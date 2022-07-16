@@ -45,7 +45,7 @@ public class UserController {
             users.add(user);
             return user;
         } else {
-            log.warn("Пользователя с таким id нет - обновление не возможно");
+            log.warn("Пользователя с таким id={} нет - обновление не возможно", user.getId());
             throw new ValidationException("Нет пользователя с таким id");
         }
     }

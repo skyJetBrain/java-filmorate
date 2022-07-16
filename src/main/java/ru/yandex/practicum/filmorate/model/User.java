@@ -12,12 +12,11 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Value
-@Slf4j
 public class User {
 
     @NonFinal
     @Setter
-    Long id;
+    private Long id;
     @NotBlank(message = "Электронная почта не может быть пустой")
     @Email(message = "Адрес электронной почты не содержит символ @")
     String email;

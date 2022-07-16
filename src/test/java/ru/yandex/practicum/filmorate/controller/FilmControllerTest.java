@@ -103,7 +103,7 @@ class FilmControllerTest {
                 "  \"rate\": 4,\n" +
                 "  \"duration\": \"190\"\n" +
                 "}";
-        mockMvc.perform(MockMvcRequestBuilders.post("/films")
+        mockMvc.perform(MockMvcRequestBuilders.put("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
@@ -119,10 +119,10 @@ class FilmControllerTest {
                 "  \"rate\": 4,\n" +
                 "  \"duration\": \"190\"\n" +
                 "}";
-        mockMvc.perform(MockMvcRequestBuilders.post("/films")
+        mockMvc.perform(MockMvcRequestBuilders.put("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
     }
 
     @Test
