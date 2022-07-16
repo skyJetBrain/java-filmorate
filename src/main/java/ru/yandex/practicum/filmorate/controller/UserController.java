@@ -15,7 +15,7 @@ import java.util.List;
 public class UserController {
 
     private final List<User> users = new ArrayList<>();
-    private static int startId = 1;
+    private static Long startId = 1L;
 
     @GetMapping
     public List<User> getUsers() {
