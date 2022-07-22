@@ -3,20 +3,19 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Value
 public class User {
 
     @NonFinal
     @Setter
-    private Long id;
+    Long id;
     @NotBlank(message = "Электронная почта не может быть пустой")
     @Email(message = "Адрес электронной почты не содержит символ @")
     String email;
@@ -28,6 +27,7 @@ public class User {
     String name;
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     LocalDate birthday;
+    Set<Long> friends;
 
 
 }
