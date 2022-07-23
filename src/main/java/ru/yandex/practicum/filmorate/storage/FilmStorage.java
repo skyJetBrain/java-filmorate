@@ -12,5 +12,5 @@ public interface FilmStorage {
 
     Film deleteFilm(Film film);
 
-    List<Film> getAllFilms();
+    List<Film> getFilms();
 }
