@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.util.ArrayList;
@@ -45,8 +46,12 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film deleteFilm(Film film) {
-        return null;
+    public void deleteFilm(Film film) {
+        Film delete = films.stream()
+                .filter(u -> u.getId() == film.getId())
+                .findAny()
+                .orElse(null);
+        films.remove(delete);
     }
 
     @Override

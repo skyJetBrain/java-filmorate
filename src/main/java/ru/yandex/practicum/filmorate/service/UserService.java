@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -30,5 +29,9 @@ public class UserService {
 
     public List<User> getUsers() {
         return userStorage.getAllUsers();
+    }
+
+    public void delete(User user) {
+        userStorage.deleteUser(user);
     }
 }

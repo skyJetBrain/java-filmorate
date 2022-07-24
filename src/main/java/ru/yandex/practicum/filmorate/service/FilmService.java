@@ -31,6 +31,10 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
+    public void delete(Film film) {
+        filmStorage.deleteFilm(film);
+    }
+
 
 
 

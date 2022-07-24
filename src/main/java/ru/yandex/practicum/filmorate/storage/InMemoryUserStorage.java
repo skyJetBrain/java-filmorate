@@ -43,8 +43,12 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public User deleteUser(User user) {
-        return null;
+    public void deleteUser(User user) {
+        User delete = users.stream()
+                .filter(u -> u.getId() == user.getId())
+                .findAny()
+                .orElse(null);
+        users.remove(delete);
     }
 
     @Override
