@@ -48,7 +48,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<User> getAllUsers() {
         log.info("Получен запрос на получение списка пользователей");
         return users;
     }

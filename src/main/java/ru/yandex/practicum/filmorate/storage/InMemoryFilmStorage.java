@@ -50,7 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public List<Film> getFilms() {
+    public List<Film> getAllFilms() {
         log.info("Получен запрос на получение списка фильмов");
         return films;
     }
