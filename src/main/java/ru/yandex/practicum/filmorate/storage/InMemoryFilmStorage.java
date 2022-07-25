@@ -16,7 +16,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     private final List<Film> films = new ArrayList<>();
     private final FilmValidator validator = new FilmValidator();
-    private static Long startId = 1L;
+    private static long startId = 1;
 
     @Override
     public Film addFilm(Film film) {
@@ -48,7 +48,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public void deleteFilm(Film film) {
         Film delete = films.stream()
-                .filter(u -> u.getId() == film.getId())
+                .filter(f -> f.getId() == film.getId())
                 .findAny()
                 .orElse(null);
         films.remove(delete);
@@ -59,5 +59,49 @@ public class InMemoryFilmStorage implements FilmStorage{
         log.info("Получен запрос на получение списка фильмов");
         return films;
     }
+
+    @Override
+    public Film getFilm(long id) {
+        log.info("Получен запрос на получение фильма по его Id");
+        return films.stream()
+                .filter(f -> id == f.getId())
+                .findFirst().orElseThrow(() -> {
+                    log.warn("Фильма с таким id={} нет - получение не возможно", id);
+                    throw new ValidationException("Нет фильма с таким id");
+                });
+    }
+
+    @Override
+    public boolean isExist(long id) {
+        return (films.stream().anyMatch(f -> f.getId() == id));
+    }
+
+    @Override
+    public Film addLike(long id, long userId) {
+        Film filmToLike = films.stream()
+                .filter(f -> id == f.getId())
+                .findFirst().orElseThrow(() -> {
+                    log.warn("Фильма с таким id={} нет - добавление лайка не возможно", id);
+                    throw new ValidationException("Нет фильма с таким id");
+                });
+
+        filmToLike.addLike(userId);
+        return filmToLike;
+
+    }
+
+    @Override
+    public Film removeLike(long id, long userId) {
+        Film filmToUnLike = films.stream()
+                .filter(f -> id == f.getId())
+                .findFirst().orElseThrow(() -> {
+                    log.warn("Фильма с таким id={} нет - удаление лайка не возможно", id);
+                    throw new ValidationException("Нет фильма с таким id");
+                });
+
+        filmToUnLike.removeLike(userId);
+        return filmToUnLike;
+    }
+
 
 }

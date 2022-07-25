@@ -15,7 +15,7 @@ public class User {
 
     @NonFinal
     @Setter
-    Long id;
+    long id;
     @NotBlank(message = "Электронная почта не может быть пустой")
     @Email(message = "Адрес электронной почты не содержит символ @")
     String email;

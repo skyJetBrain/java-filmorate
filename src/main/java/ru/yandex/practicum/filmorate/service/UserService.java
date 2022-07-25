@@ -34,4 +34,10 @@ public class UserService {
     public void delete(User user) {
         userStorage.deleteUser(user);
     }
+
+    public User getUser(long id) {
+        return userStorage.getUser(id);
+    }
+
+
 }

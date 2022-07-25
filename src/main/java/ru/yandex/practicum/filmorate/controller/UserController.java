@@ -37,9 +37,14 @@ public class UserController {
         return userService.update(user);
     }
 
-    @DeleteMapping
-    public void deleteUser(@Valid @RequestBody User user) {
-        userService.delete(user);
+//    @DeleteMapping
+//    public void deleteUser(@Valid @RequestBody User user) {
+//        userService.delete(user);
+//    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable long id) {
+        return userService.getUser(id);
     }
 
 

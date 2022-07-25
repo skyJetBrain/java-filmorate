@@ -36,6 +36,15 @@ public class FilmService {
     }
 
 
+    public Film getFilm(long id) {
+        return filmStorage.getFilm(id);
+    }
 
+    public Film addLike(long id, long userId) {
+        return filmStorage.addLike(id, userId);
+    }
 
+    public Film removeLike(long id, long userId) {
+        return filmStorage.removeLike(id, userId);
+    }
 }

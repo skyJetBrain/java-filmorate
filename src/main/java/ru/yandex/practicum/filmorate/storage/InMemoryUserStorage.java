@@ -13,7 +13,7 @@ import java.util.List;
 public class InMemoryUserStorage implements UserStorage{
 
     private final List<User> users = new ArrayList<>();
-    private static Long startId = 1L;
+    private static long startId = 1;
 
     @Override
     public User createUser(User user) {
@@ -55,5 +55,16 @@ public class InMemoryUserStorage implements UserStorage{
     public List<User> getAllUsers() {
         log.info("Получен запрос на получение списка пользователей");
         return users;
+    }
+
+    @Override
+    public User getUser(long id) {
+        log.info("Получен запрос на получение фильма по его Id");
+        return users.stream()
+                .filter(u -> id == u.getId())
+                .findFirst().orElseThrow(() -> {
+                    log.warn("Пользователя с таким id={} нет - получение не возможно", id);
+                    throw new ValidationException("Нет пользователя с таким id");
+                });
     }
 }
