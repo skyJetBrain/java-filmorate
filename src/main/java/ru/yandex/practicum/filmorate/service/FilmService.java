@@ -47,4 +47,9 @@ public class FilmService {
     public Film removeLike(long id, long userId) {
         return filmStorage.removeLike(id, userId);
     }
+
+
+    public List<Film> getPopular(int count) {
+        return filmStorage.getPopular(count);
+    }
 }

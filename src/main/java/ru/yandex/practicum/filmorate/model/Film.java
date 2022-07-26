@@ -30,11 +30,7 @@ public class Film {
         likes.remove(id);
     }
 
-    public Set<Long> getLikes(){
-        return likes;
-    }
-
-    public int getLikesSize(){
+    public int getLikesCount(){
         return likes.size();
     }
 

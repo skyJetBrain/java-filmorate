@@ -37,15 +37,27 @@ public class UserController {
         return userService.update(user);
     }
 
-//    @DeleteMapping
-//    public void deleteUser(@Valid @RequestBody User user) {
-//        userService.delete(user);
-//    }
+    @DeleteMapping
+    public void deleteUser(@Valid @RequestBody User user) {
+        userService.delete(user);
+    }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable long id) {
         return userService.getUser(id);
     }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addToFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User removeFromFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+        return userService.removeFriend(id, friendId);
+    }
+
+
 
 
 

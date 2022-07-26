@@ -44,10 +44,14 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public void deleteUser(User user) {
+        log.info("Получен запрос на удаление пользователя");
         User delete = users.stream()
                 .filter(u -> u.getId() == user.getId())
                 .findAny()
-                .orElse(null);
+                .orElseThrow(() -> {
+                    log.warn("Такого пользователя нет в списке - удаление не возможно");
+                    throw new ValidationException("Такого пользователя нет в списке");
+                });
         users.remove(delete);
     }
 
@@ -64,6 +68,46 @@ public class InMemoryUserStorage implements UserStorage{
                 .filter(u -> id == u.getId())
                 .findFirst().orElseThrow(() -> {
                     log.warn("Пользователя с таким id={} нет - получение не возможно", id);
+                    throw new ValidationException("Нет пользователя с таким id");
+                });
+    }
+
+    @Override
+    public User addFriend(long id, long friendId) {
+        log.info("Получен запрос на добавление в друзья");
+        User user = checkUserById(id);
+        User friend = checkUserById(friendId);
+
+        if (user.equals(friend)) {
+            throw new ValidationException("Невозможно добавить себя к себе в друзья");
+        }
+
+        user.addFriend(friendId);
+        friend.addFriend(id);
+        return user;
+    }
+
+    @Override
+    public User removeFriend(long id, long friendId) {
+        log.info("Получен запрос на удаление из друзей");
+        User user = checkUserById(id);
+        User friend = checkUserById(friendId);
+
+        if (user.equals(friend)) {
+            throw new ValidationException("Невозможно удалить себя из своих друзей");
+        }
+
+        user.removeFriend(friendId);
+        friend.removeFriend(id);
+        return user;
+    }
+
+    public User checkUserById(long id) {
+        return users.stream()
+                .filter(u -> id == u.getId())
+                .findFirst()
+                .orElseThrow(() -> {
+                    log.warn("Пользвоателя с таким id={} нет - добавление друзей не возможно", id);
                     throw new ValidationException("Нет пользователя с таким id");
                 });
     }

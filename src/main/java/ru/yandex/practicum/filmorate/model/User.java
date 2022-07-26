@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Value
@@ -27,7 +28,19 @@ public class User {
     String name;
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     LocalDate birthday;
-    Set<Long> friends;
+    Set<Long> friends = new HashSet<>();
+
+    public void addFriend (long id){
+        friends.add(id);
+    }
+
+    public void removeFriend (long id){
+        friends.remove(id);
+    }
+
+    public Set<Long> getFriends(){
+        return friends;
+    }
 
 
 }

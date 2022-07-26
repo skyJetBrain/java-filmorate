@@ -40,4 +40,11 @@ public class UserService {
     }
 
 
+    public User addFriend(long id, long friendId) {
+        return userStorage.addFriend(id, friendId);
+    }
+
+    public User removeFriend(long id, long friendId) {
+        return userStorage.removeFriend(id, friendId);
+    }
 }

@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -65,25 +65,19 @@ public class InMemoryFilmStorage implements FilmStorage{
         log.info("Получен запрос на получение фильма по его Id");
         return films.stream()
                 .filter(f -> id == f.getId())
-                .findFirst().orElseThrow(() -> {
+                .findFirst()
+                .orElseThrow(() -> {
                     log.warn("Фильма с таким id={} нет - получение не возможно", id);
                     throw new ValidationException("Нет фильма с таким id");
                 });
     }
 
-    @Override
-    public boolean isExist(long id) {
-        return (films.stream().anyMatch(f -> f.getId() == id));
-    }
+
 
     @Override
     public Film addLike(long id, long userId) {
-        Film filmToLike = films.stream()
-                .filter(f -> id == f.getId())
-                .findFirst().orElseThrow(() -> {
-                    log.warn("Фильма с таким id={} нет - добавление лайка не возможно", id);
-                    throw new ValidationException("Нет фильма с таким id");
-                });
+        log.info("Получен запрос на добавление лайка фильму");
+        Film filmToLike = checkFilmById(id);
 
         filmToLike.addLike(userId);
         return filmToLike;
@@ -92,15 +86,28 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film removeLike(long id, long userId) {
-        Film filmToUnLike = films.stream()
-                .filter(f -> id == f.getId())
-                .findFirst().orElseThrow(() -> {
-                    log.warn("Фильма с таким id={} нет - удаление лайка не возможно", id);
-                    throw new ValidationException("Нет фильма с таким id");
-                });
+        log.info("Получен запрос на удаление лайка у фильма");
+        Film filmToUnLike = checkFilmById(id);
 
         filmToUnLike.removeLike(userId);
         return filmToUnLike;
+    }
+
+    @Override
+    public List<Film> getPopular(int count) {
+        log.info("Получен запрос на получение списка популярных фильмов");
+        films.sort(Comparator.comparingInt(Film::getLikesCount).reversed());
+        return films.subList(0, Math.min(count, films.size()));
+    }
+
+    public Film checkFilmById(long id) {
+        return films.stream()
+                .filter(f -> id == f.getId())
+                .findFirst()
+                .orElseThrow(() -> {
+                    log.warn("Фильма с таким id={} нет - удаление лайка не возможно", id);
+                    throw new ValidationException("Нет фильма с таким id");
+                });
     }
 
 
