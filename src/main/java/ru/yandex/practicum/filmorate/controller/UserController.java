@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -52,13 +50,18 @@ public class UserController {
         return userService.getFriends(id);
     }
 
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId ) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
-    public User addToFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+    public User addToFriends(@PathVariable long id, @PathVariable long friendId) {
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User removeFromFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+    public User removeFromFriends(@PathVariable long id, @PathVariable long friendId) {
         return userService.removeFriend(id, friendId);
     }
 

@@ -2,10 +2,12 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage{
             return user;
         } else {
             log.warn("Пользователя с таким id={} нет - обновление не возможно", user.getId());
-            throw new ValidationException("Нет пользователя с таким id");
+            throw new ValidationException("Нет пользователя с таким id=" + user.getId());
         }
     }
 
@@ -52,7 +54,7 @@ public class InMemoryUserStorage implements UserStorage{
                 .findAny()
                 .orElseThrow(() -> {
                     log.warn("Такого пользователя нет в списке - удаление не возможно");
-                    throw new ValidationException("Такого пользователя нет в списке");
+                    throw new NotFoundException("Такого пользователя нет в списке");
                 });
         users.remove(delete);
     }
@@ -70,7 +72,7 @@ public class InMemoryUserStorage implements UserStorage{
                 .filter(u -> id == u.getId())
                 .findFirst().orElseThrow(() -> {
                     log.warn("Пользователя с таким id={} нет - получение не возможно", id);
-                    throw new ValidationException("Нет пользователя с таким id");
+                    throw new NotFoundException("Нет пользователя с таким id=" + id);
                 });
     }
 
@@ -113,13 +115,27 @@ public class InMemoryUserStorage implements UserStorage{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<User> getCommonFriends(long id, long otherId) {
+        log.info("Получен запрос на получение списка общих друзей");
+
+        Set<Long> userFriends = checkUserById(id).getFriends();
+        Set<Long> temp = new HashSet<>(userFriends);
+        Set<Long> otherUserFriends = checkUserById(otherId).getFriends();
+        temp.retainAll(otherUserFriends);
+        return users.stream()
+                .filter(u -> temp.contains(u.getId()))
+                .collect(Collectors.toList());
+
+    }
+
     public User checkUserById(long id) {
         return users.stream()
                 .filter(u -> id == u.getId())
                 .findFirst()
                 .orElseThrow(() -> {
-                    log.warn("Пользователя с таким id={} нет - добавление друзей не возможно", id);
-                    throw new ValidationException("Нет пользователя с таким id");
+                    log.warn("Пользователя с таким id={} нет в списке пользователей", id);
+                    throw new NotFoundException("Нет пользователя с таким id=" + id);
                 });
     }
 }

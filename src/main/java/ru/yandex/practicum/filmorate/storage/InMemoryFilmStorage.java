@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
@@ -41,7 +42,7 @@ public class InMemoryFilmStorage implements FilmStorage{
             return film;
         } else {
             log.warn("Фильма с таким id={} нет - обновление не возможно", film.getId());
-            throw new ValidationException("Нет фильма с таким id");
+            throw new ValidationException("Нет фильма с таким id=" + film.getId());
         }
     }
 
@@ -63,13 +64,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public Film getFilm(long id) {
         log.info("Получен запрос на получение фильма по его Id");
-        return films.stream()
-                .filter(f -> id == f.getId())
-                .findFirst()
-                .orElseThrow(() -> {
-                    log.warn("Фильма с таким id={} нет - получение не возможно", id);
-                    throw new ValidationException("Нет фильма с таким id");
-                });
+        return checkFilmById(id);
     }
 
 
@@ -106,7 +101,7 @@ public class InMemoryFilmStorage implements FilmStorage{
                 .findFirst()
                 .orElseThrow(() -> {
                     log.warn("Фильма с таким id={} нет - удаление лайка не возможно", id);
-                    throw new ValidationException("Нет фильма с таким id");
+                    throw new NotFoundException("Нет фильма с таким id=" + id);
                 });
     }
 
