@@ -47,4 +47,8 @@ public class UserService {
     public User removeFriend(long id, long friendId) {
         return userStorage.removeFriend(id, friendId);
     }
+
+    public List<User> getFriends(long id) {
+        return userStorage.getFriends(id);
+    }
 }

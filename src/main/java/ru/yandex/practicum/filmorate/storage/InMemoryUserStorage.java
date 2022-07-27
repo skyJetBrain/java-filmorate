@@ -7,6 +7,8 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -102,12 +104,21 @@ public class InMemoryUserStorage implements UserStorage{
         return user;
     }
 
+    @Override
+    public List<User> getFriends(long id) {
+        log.info("Получен запрос на получение списка друзей");
+        Set<Long> friends = checkUserById(id).getFriends();
+        return users.stream()
+                .filter(u -> friends.contains(u.getId()))
+                .collect(Collectors.toList());
+    }
+
     public User checkUserById(long id) {
         return users.stream()
                 .filter(u -> id == u.getId())
                 .findFirst()
                 .orElseThrow(() -> {
-                    log.warn("Пользвоателя с таким id={} нет - добавление друзей не возможно", id);
+                    log.warn("Пользователя с таким id={} нет - добавление друзей не возможно", id);
                     throw new ValidationException("Нет пользователя с таким id");
                 });
     }
