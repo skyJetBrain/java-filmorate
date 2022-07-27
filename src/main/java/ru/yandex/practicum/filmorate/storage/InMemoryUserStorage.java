@@ -42,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage{
             return user;
         } else {
             log.warn("Пользователя с таким id={} нет - обновление не возможно", user.getId());
-            throw new ValidationException("Нет пользователя с таким id=" + user.getId());
+            throw new NotFoundException("Нет пользователя с таким id=" + user.getId());
         }
     }
 

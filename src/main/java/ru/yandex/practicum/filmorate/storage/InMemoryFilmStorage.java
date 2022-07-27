@@ -5,11 +5,13 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -42,7 +44,7 @@ public class InMemoryFilmStorage implements FilmStorage{
             return film;
         } else {
             log.warn("Фильма с таким id={} нет - обновление не возможно", film.getId());
-            throw new ValidationException("Нет фильма с таким id=" + film.getId());
+            throw new NotFoundException("Нет фильма с таким id=" + film.getId());
         }
     }
 
@@ -83,6 +85,10 @@ public class InMemoryFilmStorage implements FilmStorage{
     public Film removeLike(long id, long userId) {
         log.info("Получен запрос на удаление лайка у фильма");
         Film filmToUnLike = checkFilmById(id);
+        Set<Long> likes = filmToUnLike.getLikes();
+        if (!likes.contains(userId)) {
+            throw new NotFoundException("Не найдено пользователя поставившего лайк");
+        }
 
         filmToUnLike.removeLike(userId);
         return filmToUnLike;
