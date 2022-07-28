@@ -20,7 +20,7 @@ public class InMemoryUserStorage implements UserStorage{
     private static long startId = 1;
 
     @Override
-    public User createUser(User user) {
+    public User create(User user) {
         log.info("Получен запрос на создание нового пользователя");
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
@@ -31,7 +31,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public User updateUser(User user) {
+    public User update(User user) {
         User update = users.stream()
                 .filter(u -> u.getId() == user.getId())
                 .findAny()
@@ -47,7 +47,7 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void delete(User user) {
         log.info("Получен запрос на удаление пользователя");
         User delete = users.stream()
                 .filter(u -> u.getId() == user.getId())
@@ -60,13 +60,13 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         log.info("Получен запрос на получение списка пользователей");
         return users;
     }
 
     @Override
-    public User getUser(long id) {
+    public User get(long id) {
         log.info("Получен запрос на получение фильма по его Id");
         return users.stream()
                 .filter(u -> id == u.getId())

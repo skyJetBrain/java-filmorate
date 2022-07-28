@@ -20,7 +20,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     private static long startId = 1;
 
     @Override
-    public Film addFilm(Film film) {
+    public Film add(Film film) {
         log.info("Получен запрос на добавление нового фильмов");
         validator.validateReleaseDate(film);
         film.setId(startId++);
@@ -29,7 +29,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film updateFilm(Film film) {
+    public Film update(Film film) {
         log.info("Получен запрос на обновление фильма");
         validator.validateReleaseDate(film);
         Film update = films.stream()
@@ -47,7 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public void deleteFilm(Film film) {
+    public void delete(Film film) {
         Film delete = films.stream()
                 .filter(f -> f.getId() == film.getId())
                 .findAny()
@@ -56,13 +56,13 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public List<Film> getAllFilms() {
+    public List<Film> getAll() {
         log.info("Получен запрос на получение списка фильмов");
         return films;
     }
 
     @Override
-    public Film getFilm(long id) {
+    public Film get(long id) {
         log.info("Получен запрос на получение фильма по его Id");
         return checkFilmById(id);
     }

@@ -12,7 +12,7 @@ import java.util.List;
 @Value
 public class FilmService {
 
-    FilmStorage filmStorage;
+    private FilmStorage filmStorage;
 
     @Autowired
     public FilmService(FilmStorage filmStorage) {
@@ -20,24 +20,24 @@ public class FilmService {
     }
 
     public Film add(Film film) {
-        return filmStorage.addFilm(film);
+        return filmStorage.add(film);
     }
 
     public Film update(Film film) {
-        return filmStorage.updateFilm(film);
+        return filmStorage.update(film);
     }
 
     public List<Film> getFilms() {
-        return filmStorage.getAllFilms();
+        return filmStorage.getAll();
     }
 
     public void delete(Film film) {
-        filmStorage.deleteFilm(film);
+        filmStorage.delete(film);
     }
 
 
     public Film getFilm(long id) {
-        return filmStorage.getFilm(id);
+        return filmStorage.get(id);
     }
 
     public Film addLike(long id, long userId) {

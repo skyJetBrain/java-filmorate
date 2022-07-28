@@ -12,7 +12,7 @@ import java.util.List;
 @Value
 public class UserService {
 
-    UserStorage userStorage;
+    private UserStorage userStorage;
 
     @Autowired
     public UserService(UserStorage userStorage) {
@@ -20,23 +20,23 @@ public class UserService {
     }
 
     public User create(User user) {
-        return userStorage.createUser(user);
+        return userStorage.create(user);
     }
 
     public User update(User user) {
-        return userStorage.updateUser(user);
+        return userStorage.update(user);
     }
 
     public List<User> getUsers() {
-        return userStorage.getAllUsers();
+        return userStorage.getAll();
     }
 
     public void delete(User user) {
-        userStorage.deleteUser(user);
+        userStorage.delete(user);
     }
 
     public User getUser(long id) {
-        return userStorage.getUser(id);
+        return userStorage.get(id);
     }
 
 
