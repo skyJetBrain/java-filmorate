@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Value
+@Builder
 public class User {
 
     @NonFinal

@@ -19,8 +19,8 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User create(User user) {
-        return userStorage.create(user);
+    public User add(User user) {
+        return userStorage.add(user);
     }
 
     public User update(User user) {

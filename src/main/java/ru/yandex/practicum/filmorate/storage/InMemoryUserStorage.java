@@ -20,7 +20,7 @@ public class InMemoryUserStorage implements UserStorage{
     private static long startId = 1;
 
     @Override
-    public User create(User user) {
+    public User add(User user) {
         log.info("Получен запрос на создание нового пользователя");
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
