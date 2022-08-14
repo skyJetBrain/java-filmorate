@@ -23,6 +23,8 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть больше 0")
     int duration;
     Set<Long> likes = new HashSet<>();
+    Set<Genre> genres = new HashSet<>();
+    Mpa mpa;
 
     public void addLike (long id){
         likes.add(id);

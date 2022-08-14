@@ -1,10 +1,11 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 
     private final List<User> users = new ArrayList<>();
     private static long startId = 1;
@@ -67,7 +68,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User get(long id) {
-        log.info("Получен запрос на получение фильма по его Id");
+        log.info("Получен запрос на получение пользователя по его Id");
         return users.stream()
                 .filter(u -> id == u.getId())
                 .findFirst().orElseThrow(() -> {

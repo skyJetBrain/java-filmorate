@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,10 +19,6 @@ import java.util.Objects;
 @Slf4j
 public class UserDbStorage implements UserStorage {
     JdbcTemplate jdbcTemplate;
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public User add(User user) {
@@ -36,28 +34,47 @@ public class UserDbStorage implements UserStorage {
             return stmt;
         }, keyHolder);
         user.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
-        log.info("Пользователь {} записан в базу данных", user);
+        log.info("Пользователь с Id={} записан в базу данных", user.getId());
         return user;
     }
 
     @Override
     public User update(User user) {
-        return null;
+        String sqlQuery = "UPDATE USERS SET  name = ?, login = ?, email = ?, birthday = ? WHERE USER_ID = ?";
+
+        jdbcTemplate.update(sqlQuery,
+                user.getName(),
+                user.getLogin(),
+                user.getEmail(),
+                user.getBirthday(),
+                user.getId());
+        log.info("данные пользователя c Id={} обновлены в базе данных", user.getId());
+        return get(user.getId());
     }
 
     @Override
     public void delete(User user) {
-
+        String sqlQuery = "DELETE FROM USERS WHERE user_id = ?";
+        log.info("Пользователь c Id={} удален из базы данных", user.getId());
+        jdbcTemplate.update(sqlQuery, user.getId());
     }
 
     @Override
     public List<User> getAll() {
-        return null;
+        String sqlQuery = "SELECT user_id, name, login, email, birthday FROM users";
+        log.info("Получен запрос на получение списка пользователей из базы данных");
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
     }
 
     @Override
     public User get(long id) {
-        return null;
+        String sqlQuery = "SELECT user_id, name, login, email, birthday FROM users WHERE user_id = ?";
+        int affected = jdbcTemplate.update("UPDATE users set user_id = ? where user_id = ?", id, id);
+        if (affected == 0) {
+            return null;
+        }
+        log.info("Получен запрос на получение из базы данных пользователя по его Id={} ", id);
+        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
     }
 
     @Override
@@ -78,5 +95,15 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getCommonFriends(long id, long otherId) {
         return null;
+    }
+
+    private User mapRowToUser(ResultSet resultSet, int id) throws SQLException {
+        return User.builder()
+                .id(resultSet.getLong("user_id"))
+                .name(resultSet.getString("name"))
+                .email(resultSet.getString("email"))
+                .login(resultSet.getString("login"))
+                .birthday(resultSet.getDate("birthday").toLocalDate())
+                .build();
     }
 }
