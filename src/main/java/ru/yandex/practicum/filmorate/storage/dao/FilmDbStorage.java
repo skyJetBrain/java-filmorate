@@ -21,8 +21,8 @@ import java.util.Objects;
 
 @Value
 @Slf4j
-@Repository
 @Primary
+@Component("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
 
     JdbcTemplate jdbcTemplate;

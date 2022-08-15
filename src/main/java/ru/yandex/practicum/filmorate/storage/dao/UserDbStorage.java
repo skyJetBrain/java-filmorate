@@ -21,8 +21,8 @@ import java.util.Objects;
 
 @Value
 @Slf4j
-@Repository
 @Primary
+@Component("UserDbStorage")
 public class UserDbStorage implements UserStorage {
     JdbcTemplate jdbcTemplate;
 
