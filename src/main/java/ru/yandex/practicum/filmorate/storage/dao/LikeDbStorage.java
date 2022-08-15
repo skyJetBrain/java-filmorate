@@ -35,7 +35,7 @@ public class LikeDbStorage implements LikeStorage {
     }
 
     @Override
-    public List<Film> getPopular(int count) {
+    public List<Long> getPopular(int count) {
         String sqlQuery = "SELECT f.FILM_ID, f.NAME , RELEASE_DATE , DESCRIPTION ,DURATION , MPAS.MPA_ID, MPAS.NAME " +
                 "FROM FILMS f " +
                 "LEFT JOIN LIKES l on f.FILM_ID = l.FILM_ID " +
@@ -43,17 +43,10 @@ public class LikeDbStorage implements LikeStorage {
                 "GROUP BY f.NAME " +
                 "ORDER BY COUNT (l.USER_ID) DESC " +
                 "LIMIT ?";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
+        return jdbcTemplate.query(sqlQuery, this::mapRowToIdList, count);
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(resultSet.getLong("FILM_ID"))
-                .name(resultSet.getString("NAME"))
-                .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
-                .description(resultSet.getString("DESCRIPTION"))
-                .duration(resultSet.getInt("DURATION"))
-                .mpa(new Mpa(resultSet.getInt("MPAS.MPA_ID"), resultSet.getString("MPAS.NAME")))
-                .build();
+    private long mapRowToIdList(ResultSet resultSet, int id) throws SQLException {
+        return resultSet.getLong("film_id");
     }
 }

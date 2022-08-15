@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -73,11 +74,16 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAll() {
-        String sqlQuery = "SELECT f.FILM_ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID, m.NAME " +
+        String sqlQuery = "SELECT f.FILM_ID," +
+                "                 f.NAME," +
+                "                 f.DESCRIPTION," +
+                "                 f.RELEASE_DATE," +
+                "                 f.DURATION," +
+                "                 f.MPA_ID," +
+                "                 m.NAME " +
                 "FROM FILMS AS f " +
-                "INNER JOIN MPAS AS m on m.MPA_ID = f.MPA_ID " +
+                "INNER JOIN MPAS m on m.MPA_ID = f.FILM_ID " +
                 "GROUP BY f.FILM_ID";
-        log.info("Получен запрос на получение списка фильмов из базы данных");
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
@@ -111,13 +117,16 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        return Film.builder()
+        Film film = Film.builder()
                 .id(resultSet.getLong("film_id"))
                 .name(resultSet.getString("name"))
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
                 .description(resultSet.getString("description"))
                 .duration(resultSet.getInt("duration"))
-                .mpa(new Mpa(resultSet.getInt("MPAS.MPA_ID"), resultSet.getString("MPAS.NAME")))
                 .build();
+        film.setMpa(new Mpa(resultSet.getLong("mpa_id"), resultSet.getString(7)));
+        return film;
     }
+
+
 }

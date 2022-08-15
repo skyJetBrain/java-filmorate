@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Value
 @Builder
+
 public class Film {
     @NonFinal
     @Setter
@@ -26,7 +27,11 @@ public class Film {
     Set<Long> likes = new HashSet<>();
     @NonFinal
     Set<Genre> genres = new HashSet<>();
+
+    @NonFinal
+    @Setter
     Mpa mpa;
+
 
     public void addLike (long id){
         likes.add(id);

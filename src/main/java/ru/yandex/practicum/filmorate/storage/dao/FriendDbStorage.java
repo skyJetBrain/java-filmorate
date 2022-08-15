@@ -4,7 +4,6 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
@@ -20,17 +19,21 @@ public class FriendDbStorage implements FriendStorage {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addFriend(long fromUserId, long toUserId) {
-        int affected = jdbcTemplate.update("UPDATE friends set USER_FROM_ID = ?, USER_TO_ID = ? " +
-                "where USER_FROM_ID = ? AND USER_TO_ID = ?", fromUserId, toUserId, fromUserId, toUserId);
+    public void addFriend(long reqUserId, long respUserId) {
+        // Проверяем, был ли уже отправлен запрос на дружбу
+        int affected = jdbcTemplate.update("UPDATE friends set req_user_id = ?, resp_user_id = ? " +
+                "where req_user_id = ? AND resp_user_id = ?", respUserId, reqUserId, respUserId, reqUserId);
+        System.out.println(affected);
 
+        // Если нет, добавляем строку в таблицу
         String sqlQuery;
         if (affected == 0) {
-            sqlQuery = "INSERT INTO friends (USER_FROM_ID, USER_TO_ID) VALUES (?, ?)";
+            sqlQuery = "INSERT INTO friends (req_user_id, resp_user_id) VALUES (?, ?)";
+            // Устанавливаем флаг подтверждения
         } else {
-            sqlQuery = "UPDATE friends SET IS_CONFIRMED = 1 WHERE USER_FROM_ID = ? AND USER_TO_ID = ?";
+            sqlQuery = "UPDATE friends SET IS_FRIEND = 1 WHERE REQ_USER_ID = ? AND RESP_USER_ID = ?";
         }
-        jdbcTemplate.update(sqlQuery, fromUserId, toUserId);
+        jdbcTemplate.update(sqlQuery, reqUserId, respUserId);
     }
 
     @Override
@@ -41,12 +44,12 @@ public class FriendDbStorage implements FriendStorage {
                 "                          u.email," +
                 "                          u.birthday " +
                 "FROM friends AS f " +
-                "         INNER JOIN users AS u ON (u.user_id = f.USER_TO_ID" +
-                "    OR u.user_id = f.USER_FROM_ID) " +
-                "    AND (f.USER_TO_ID = ?" +
-                "        OR f.USER_FROM_ID = ?)" +
-                "WHERE ((f.USER_FROM_ID = ?" +
-                "  AND f.IS_CONFIRMED) OR f.USER_TO_ID = ?) AND u.USER_ID != ?" +
+                "         INNER JOIN users AS u ON (u.user_id = f.REQ_USER_ID" +
+                "    OR u.user_id = f.RESP_USER_ID) " +
+                "    AND (f.REQ_USER_ID = ?" +
+                "        OR f.RESP_USER_ID = ?)" +
+                "WHERE ((f.RESP_USER_ID = ?" +
+                "  AND f.is_friend) OR f.REQ_USER_ID = ?) AND u.USER_ID != ?" +
                 "ORDER BY u.user_id";
         List<User> users = jdbcTemplate.query(sqlQuery, this::mapRowToUser, id, id, id, id, id);
         log.debug("Выгружен список друзей пользователя с id {}, количество друзей: {}", id, users.size());
@@ -61,12 +64,12 @@ public class FriendDbStorage implements FriendStorage {
                 "                          u.login," +
                 "                          u.birthday " +
                 "FROM friends AS f" +
-                "         INNER JOIN users AS u ON (u.user_id = f.USER_TO_ID" +
-                "    OR u.user_id = f.USER_FROM_ID)" +
-                "    AND (f.USER_TO_ID = ?" +
-                "        OR f.USER_FROM_ID = ?" +
-                "        OR f.USER_TO_ID = ?" +
-                "        OR f.USER_FROM_ID = ?)" +
+                "         INNER JOIN users AS u ON (u.user_id = f.REQ_USER_ID" +
+                "    OR u.user_id = f.RESP_USER_ID)" +
+                "    AND (f.REQ_USER_ID = ?" +
+                "        OR f.RESP_USER_ID = ?" +
+                "        OR f.REQ_USER_ID = ?" +
+                "        OR f.RESP_USER_ID = ?)" +
                 "WHERE u.user_id != ?" +
                 "  AND u.user_id != ?" +
                 "GROUP BY u.user_id " +
@@ -79,10 +82,10 @@ public class FriendDbStorage implements FriendStorage {
 
     @Override
     public void deleteFromFriends(long id, long otherId) {
-        String sqlQuery = "DELETE FROM FRIENDS WHERE (USER_TO_ID = ? AND USER_FROM_ID = ?) OR " +
-                "(USER_TO_ID = ? AND USER_FROM_ID = ?)";
+        String sqlQuery = "DELETE FROM FRIENDS WHERE (REQ_USER_ID = ? AND RESP_USER_ID = ?) OR " +
+                "(REQ_USER_ID = ? AND RESP_USER_ID = ?)";
         jdbcTemplate.update(sqlQuery, id, otherId, otherId, id);
-        log.debug("Пользователь с id={} удалён из друзей пользователя с id={}", id, otherId);
+        log.debug("Пользователь с id ? удалён из друзей пользователя с id ?", id, otherId);
     }
 
     private User mapRowToUser(ResultSet resultSet, int id) throws SQLException {

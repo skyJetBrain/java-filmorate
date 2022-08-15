@@ -14,7 +14,7 @@ import java.util.List;
 
 @Value
 @RestController
-@RequestMapping("/mpas")
+@RequestMapping("/mpa")
 public class MpaController {
     MpaStorage mpaStorage;
 

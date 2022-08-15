@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    user_from_id INTEGER REFERENCES users(user_id),
-    user_to_id INTEGER REFERENCES users(user_id),
-    is_confirmed boolean DEFAULT 0,
-    PRIMARY KEY (user_from_id, user_to_id)
+    req_user_id INTEGER REFERENCES users(user_id),
+    resp_user_id INTEGER REFERENCES users(user_id),
+    is_friend boolean DEFAULT 0,
+    PRIMARY KEY (req_user_id, resp_user_id)
 );
 
 CREATE TABLE IF NOT EXISTS genres (

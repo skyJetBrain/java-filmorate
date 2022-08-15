@@ -101,7 +101,10 @@ public class FilmService {
     }
 
     public List<Film> getPopular(int count) {
-        return filmStorage.getPopular(count);
+        List<Long> mostPopularFilmsId = likeStorage.getPopular(count);
+        return mostPopularFilmsId.stream()
+                .map(filmStorage::get)
+                .collect(Collectors.toList());
     }
 
     public List<Genre> getAllGenres() {
