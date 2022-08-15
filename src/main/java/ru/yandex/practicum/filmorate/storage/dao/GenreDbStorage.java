@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
@@ -12,9 +13,9 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 @Value
 @Slf4j
+@Repository
 public class GenreDbStorage implements GenreStorage {
     JdbcTemplate jdbcTemplate;
 
@@ -39,16 +40,14 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void set(Film film) {
-        long id = film.getId();
-        String sqlDelete = "delete from FILMS_GENRES where FILM_ID = ?";
-        jdbcTemplate.update(sqlDelete, id);
-        if (film.getGenres() == null || film.getGenres().isEmpty()) {
-            return;
-        }
-        for (Genre genre : film.getGenres()) {
-            String sqlQuery = "INSERT INTO FILMS_GENRES (FILM_ID, GENRE_ID) values (?,?) ";
-            jdbcTemplate.update(sqlQuery, id, genre.getId());
-        }
+        String sqlQuery = "SELECT g.GENRE_ID," +
+                "                 g.NAME " +
+                "FROM FILMS_GENRES AS fg " +
+                "INNER JOIN GENRES g on g.GENRE_ID = FG.GENRE_ID " +
+                "WHERE fg.FILM_ID = ?";
+        List<Genre> genres = jdbcTemplate.query(sqlQuery, this::mapRowToGenre, film.getId());
+        Set<Genre> genresSet = new HashSet<>(genres);
+        film.setGenres(genresSet);
 
     }
 

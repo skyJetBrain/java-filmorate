@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -23,6 +24,7 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть больше 0")
     int duration;
     Set<Long> likes = new HashSet<>();
+    @NonFinal
     Set<Genre> genres = new HashSet<>();
     Mpa mpa;
 
@@ -38,4 +40,7 @@ public class Film {
         return likes.size();
     }
 
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
+    }
 }

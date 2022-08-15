@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.List;
 
@@ -12,12 +13,14 @@ import java.util.List;
 @Value
 public class FilmService {
 
-    private FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
+
 
     @Autowired
     public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
+
 
     public Film add(Film film) {
         return filmStorage.add(film);

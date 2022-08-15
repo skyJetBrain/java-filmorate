@@ -2,9 +2,13 @@ package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -17,6 +21,8 @@ import java.util.Objects;
 
 @Value
 @Slf4j
+@Repository
+@Primary
 public class UserDbStorage implements UserStorage {
     JdbcTemplate jdbcTemplate;
 

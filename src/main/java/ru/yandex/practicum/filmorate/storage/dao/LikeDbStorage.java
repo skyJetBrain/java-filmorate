@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.LikeStorage;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Value
 @Slf4j
+@Repository
 public class LikeDbStorage implements LikeStorage {
 
     JdbcTemplate jdbcTemplate;
@@ -50,7 +52,7 @@ public class LikeDbStorage implements LikeStorage {
                 .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
                 .description(resultSet.getString("DESCRIPTION"))
                 .duration(resultSet.getInt("DURATION"))
-                .mpa(new Mpa(resultSet.getInt("MPA.MPA_ID"), resultSet.getString("MPA.NAME")))
+                .mpa(new Mpa(resultSet.getInt("MPAS.MPA_ID"), resultSet.getString("MPAS.NAME")))
                 .build();
     }
 }

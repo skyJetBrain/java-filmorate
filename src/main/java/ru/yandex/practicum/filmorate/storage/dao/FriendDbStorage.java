@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Value
 @Slf4j
+@Repository
 public class FriendDbStorage implements FriendStorage {
 
     JdbcTemplate jdbcTemplate;

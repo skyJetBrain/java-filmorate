@@ -2,9 +2,12 @@ package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -18,6 +21,8 @@ import java.util.Objects;
 
 @Value
 @Slf4j
+@Repository
+@Primary
 public class FilmDbStorage implements FilmStorage {
 
     JdbcTemplate jdbcTemplate;
