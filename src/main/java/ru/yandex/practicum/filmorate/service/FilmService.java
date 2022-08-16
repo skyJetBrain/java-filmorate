@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -14,6 +15,7 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +42,12 @@ public class FilmService {
 
 
     public Film add(Film film) {
-        film = filmStorage.add(film);
-        if (film.getGenres() != null) {
-            genreStorage.set(film);
-        }
+        final Film filmFromStorage = filmStorage.get(film.getId());
+        if (filmFromStorage == null) {
+            filmStorage.add(film);
+            genreStorage.set(film);//записываем жанры фильму,заполняем таблицу FILM_GENRES
+        } else throw new ValidationException(String.format(
+                "Фильм с таким id %s уже зарегистрирован.", film.getId()));
         return film;
     }
 
@@ -73,8 +77,11 @@ public class FilmService {
 
 
     public Film getFilm(long id) {
-        Film film = filmStorage.get(id);
-        genreStorage.set(film);
+        final Film film = filmStorage.get(id);
+        if (film == null) {
+            throw new NotFoundException("User with id=" + id + "not found");
+        }
+        film.setGenres(new HashSet<>(genreStorage.getFilmGenres(film))); //получаем жанры фильма и добавляем к обьекту
         return film;
     }
 

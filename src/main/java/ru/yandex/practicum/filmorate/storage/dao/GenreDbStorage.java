@@ -41,14 +41,18 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void set(Film film) {
-        String sqlQuery = "SELECT g.GENRE_ID," +
-                "                 g.NAME " +
-                "FROM FILMS_GENRES AS fg " +
-                "INNER JOIN GENRES g on g.GENRE_ID = FG.GENRE_ID " +
-                "WHERE fg.FILM_ID = ?";
-        List<Genre> genres = jdbcTemplate.query(sqlQuery, this::mapRowToGenre, film.getId());
-        Set<Genre> genresSet = new HashSet<>(genres);
-        film.setGenres(genresSet);
+        long id = film.getId();
+        String sqlDelete = "delete from FILMS_GENRES where FILM_ID = ?";
+        jdbcTemplate.update(sqlDelete, id);
+        if (film.getGenres() == null || film.getGenres().isEmpty()) {
+            return;
+        }
+        for (Genre genre : film.getGenres()) {
+            String sqlQuery = "INSERT INTO FILMS_GENRES (FILM_ID, GENRE_ID) values (?,?) ";
+            jdbcTemplate.update(sqlQuery
+                    , id
+                    , genre.getId());
+        }
 
     }
 

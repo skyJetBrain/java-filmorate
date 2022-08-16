@@ -19,12 +19,14 @@ public class MpaDbStorage implements MpaStorage {
     JdbcTemplate jdbcTemplate;
     @Override
     public Mpa get(long id) {
-        int affected = jdbcTemplate.update("UPDATE MPAS set MPA_ID = ? where MPA_ID = ?", id, id);
-        if (affected == 0) {
+        final String sqlQuery = "select MPA_ID ,NAME " +
+                "FROM MPAS " +
+                "where MPA_ID = ?";
+        final List<Mpa> mpas = jdbcTemplate.query(sqlQuery, MpaDbStorage::makeMpa, id);
+        if (mpas.size() != 1) {
             return null;
         }
-        String sqlQuery = "SELECT * FROM MPAS WHERE MPA_ID = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa, id);
+        return mpas.get(0);
     }
 
     @Override
@@ -38,5 +40,11 @@ public class MpaDbStorage implements MpaStorage {
     private Mpa mapRowToMpa(ResultSet resultSet, int id) throws SQLException {
         log.info("Получен рейтинг c id= {} из базы данных", id);
         return new Mpa(resultSet.getLong("mpa_id"), resultSet.getString("name"));
+    }
+
+    static Mpa makeMpa(ResultSet rs, int rowNum) throws SQLException {
+        return new Mpa(rs.getInt("MPA_ID"),
+                rs.getString("NAME")
+        );
     }
 }
